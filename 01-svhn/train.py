@@ -68,7 +68,7 @@ def main():
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
     loss_reg = tf.add_n(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES))
     #loss = tf.losses.softmax_cross_entropy(label_onehot, logits) + loss_reg
-    loss = (tf.norm(tf.subtract(label_onehot,preds),ord='euclidean'))**2+ loss_reg
+    loss = (tf.norm(tf.subtract(tf.cast(label_onehot, dtype=tf.float32),tf.cast(preds, dtype=tf.float32)),ord='euclidean'))**2+ loss_reg
 
     ## train config
     global_steps = tf.Variable(0, trainable=False)
