@@ -1,0 +1,12 @@
+--- orinialtrain.py	2019-05-02 14:54:19.579368700 +0800
++++ train1.2.py	2019-05-02 16:11:43.576951500 +0800
+@@ -67,8 +67,7 @@
+                             tf.cast(tf.argmax(label_onehot, 1), dtype=tf.int32))
+     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+     loss_reg = tf.add_n(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES))
+-    loss = tf.losses.softmax_cross_entropy(label_onehot, logits) + loss_reg
+-
++    loss = (tf.norm(tf.subtract(tf.cast(label_onehot, dtype=tf.float32),tf.cast(preds, dtype=tf.float32)),ord='euclidean'))**2+ loss_reg
+     ## train config
+     global_steps = tf.Variable(0, trainable=False)
+     boundaries = [train_set.minibatchs_per_epoch*15, train_set.minibatchs_per_epoch*40]

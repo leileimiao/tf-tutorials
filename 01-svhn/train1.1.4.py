@@ -33,7 +33,7 @@ def get_dataset_batch(ds_name):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--continue', dest='continue_path', required=False)
-    parser.add_argument('-l', '--loss', default='abs-max')
+    parser.add_argument('-l', '--loss', default='non-negative-max')
     args = parser.parse_args()
 
     assert args.loss in ['softmax', 'abs-max', 'square-max', 'plus-one-abs-max', 'non-negative-max']
@@ -72,7 +72,6 @@ def main():
     else :
         loss = -tf.reduce_sum(label_onehot,preds) + loss_reg  #for homework 1.1
     
-
     ## train config
     global_steps = tf.Variable(0, trainable=False)
     boundaries = [train_set.minibatchs_per_epoch*15, train_set.minibatchs_per_epoch*40]

@@ -33,7 +33,7 @@ def get_dataset_batch(ds_name):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--continue', dest='continue_path', required=False)
-    parser.add_argument('-l', '--loss', default='abs-max')
+    parser.add_argument('-l', '--loss', default='softmax')
     args = parser.parse_args()
 
     assert args.loss in ['softmax', 'abs-max', 'square-max', 'plus-one-abs-max', 'non-negative-max']
@@ -67,12 +67,7 @@ def main():
                             tf.cast(tf.argmax(label_onehot, 1), dtype=tf.int32))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
     loss_reg = tf.add_n(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES))
-    if args.loss == 'softmax':
-        loss = tf.losses.softmax_cross_entropy(label_onehot, logits) + loss_reg
-    else :
-        loss = -tf.reduce_sum(label_onehot,preds) + loss_reg  #for homework 1.1
-    
-
+    loss = (tf.norm(tf.subtract(tf.cast(label_onehot, dtype=tf.float32),tf.cast(preds, dtype=tf.float32)),ord='euclidean'))**2+ loss_reg
     ## train config
     global_steps = tf.Variable(0, trainable=False)
     boundaries = [train_set.minibatchs_per_epoch*15, train_set.minibatchs_per_epoch*40]

@@ -1,0 +1,30 @@
+37,38c37,38
+<     def _pool_layer(self, name, inp, ksize, stride, padding='SAME', mode='MAX'):
+<         assert mode in ['MAX', 'AVG'], 'the mode of pool must be MAX or AVG'
+---
+>     def _pool_layer(self, name, inp, ksize, stride, padding='SAME', mode='LP',p=0):
+>         assert mode in ['LP','MAX', 'AVG'], 'the mode of pool must be LP or MAX or AVG'
+44a45,51
+>         elif mode =='LP':
+>             x = tf.nn.avg_pool(tf.pow(inp , p), ksize=[1, ksize, ksize, 1], strides=[1, stride, stride, 1],
+>                                padding=padding, name=name, data_format='NHWC')
+>             x = (tf.sign(x) * tf.nn.relu(tf.abs(x)))
+>             x = tf.multiply(x, ksize* ksize)
+>             x = tf.pow(x,1./p)
+> 
+77c84
+<         x = self._pool_layer(name='pool1', inp=x, ksize=2, stride=2, mode='MAX') # Nx16x16x16
+---
+>         x = self._pool_layer(name='pool1', inp=x, ksize=2, stride=2, mode='LP') # Nx16x16x16
+84c91
+<         x = self._pool_layer(name='pool2', inp=x, ksize=2, stride=2, mode='MAX') # Nx8x8x32
+---
+>         x = self._pool_layer(name='pool2', inp=x, ksize=2, stride=2, mode='LP') # Nx8x8x32
+91c98
+<         x = self._pool_layer(name='pool3', inp=x, ksize=2, stride=2, mode='MAX') # Nx4x4x64
+---
+>         x = self._pool_layer(name='pool3', inp=x, ksize=2, stride=2, mode='LP') # Nx4x4x64
+98c105
+<         x = self._pool_layer(name='pool4', inp=x, ksize=4, stride=4, mode='AVG') # Nx1x1x128
+---
+>         x = self._pool_layer(name='pool4', inp=x, ksize=4, stride=4, mode='LP') # Nx1x1x128
