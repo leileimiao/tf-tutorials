@@ -33,7 +33,7 @@ def get_dataset_batch(ds_name):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--continue', dest='continue_path', required=False)
-    parser.add_argument('-l', '--loss', default='softmax')
+    parser.add_argument('-l', '--loss', default='abs-max')
     args = parser.parse_args()
 
     assert args.loss in ['softmax', 'abs-max', 'square-max', 'plus-one-abs-max', 'non-negative-max']
